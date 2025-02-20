@@ -51,7 +51,7 @@
 	- Seleccione los criterios que requiera y de clic en Buscar (campos marcados con * son obligatorios).<br/>
 	- La Fecha de busqueda es la Fecha de la Transferencia.<br/>
 	- Seleccione las transferencias que quiera programar para su reversion.<br/>
-	- <b>Programar:</b> La transferencia sera programada para que sea revertida en mobile, esta accion tardara de 15 a 30 min.<br/> 
+	- <b>Programar:</b> La transferencia sera programada para que sea revertida en BES, esta accion tardara de 15 a 30 min.<br/> 
 </div>
 <div>
 
