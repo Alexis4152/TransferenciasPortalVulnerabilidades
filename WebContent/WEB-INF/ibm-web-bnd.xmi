@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<webappbnd:WebAppBinding xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:webappbnd="webappbnd.xmi" xmi:id="WebAppBinding_1268239214992" virtualHostName="default_host">
+  <webapp href="WEB-INF/web.xml#WebApp_ID"/>
+  <resRefBindings xmi:id="ResourceRefBinding_1361310420565" jndiName="jdbc/trans2">
+    <bindingResourceRef href="WEB-INF/web.xml#ResourceRef_1232043273564"/>
+  </resRefBindings>
+  <resRefBindings xmi:id="ResourceRefBinding_1361311206877" jndiName="jdbc/mobilepr1">
+    <bindingResourceRef href="WEB-INF/web.xml#ResourceRef_1361313236057"/>
+  </resRefBindings>
+  <resRefBindings xmi:id="ResourceRefBinding_1361311206893" jndiName="jdbc/mobilepr2">
+    <bindingResourceRef href="WEB-INF/web.xml#ResourceRef_1361313843889"/>
+  </resRefBindings>
+  <resRefBindings xmi:id="ResourceRefBinding_1361313292431" jndiName="jdbc/mobilepr1">
+    <bindingResourceRef href="WEB-INF/web.xml#ResourceRef_1361313292431"/>
+  </resRefBindings>
+  <resRefBindings xmi:id="ResourceRefBinding_1361313906169" jndiName="jdbc/mobilepr2">
+    <bindingResourceRef href="WEB-INF/web.xml#ResourceRef_1361313906169"/>
+  </resRefBindings>
+</webappbnd:WebAppBinding>

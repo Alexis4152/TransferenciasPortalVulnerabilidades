@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Query>
+
+    <delete>
+	  <name>D_PTRA_PAGOS</name>
+	  <instruction>
+		DELETE FROM TRA_PAGOS WHERE IDPAGOS=?
+	  </instruction>
+	</delete>
+	<delete>
+	  <name>D_PTRA_PAGOSBYTRANS</name>
+	  <instruction>
+		DELETE FROM TRA_PAGOS WHERE IDTRANSFERENCIA=?
+	  </instruction>
+	</delete>
+	<delete>
+	  <name>D_PTRA_HISTORIALCOME</name>
+	  <instruction>
+		DELETE FROM TRA_HISTORIAL WHERE IDTRANSFERENCIA=?  AND IDESTATUS=?
+	  </instruction>
+	</delete>
+</Query>

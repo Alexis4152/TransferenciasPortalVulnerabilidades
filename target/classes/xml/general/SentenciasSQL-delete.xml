@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Query>
+    <delete>
+	  <name> </name>
+	  <instruction>
+		
+	  </instruction>
+	</delete>
+	<delete>
+	  <name>D_PTRA_DELETE_ALERTAS</name>
+	  <instruction>
+		DELETE FROM TRA_ALERTAS WHERE IDALERTA=?
+	  </instruction>
+	</delete>
+	<delete>
+	  <name>D_PTRA_DELETE_PETICIONES</name>
+	  <instruction>
+		DELETE FROM TRA_PETICIONES WHERE IDPETICION=?
+	  </instruction>
+	</delete>
+</Query>

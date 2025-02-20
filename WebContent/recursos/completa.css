@@ -1,0 +1,24 @@
+BODY
+		{
+		    BACKGROUND-COLOR: #FFFFFF;
+		    COLOR: #333366;
+		    FONT-FAMILY: Verdana;
+		    font-size: 12px;  
+		  
+		}
+	
+	.left {
+	text-align: left;
+}
+	
+	b{
+	color: #4c7787;
+   }
+	.instrucciones {
+		
+	
+	font-size: 10px;
+	background-color: #F0F0F0;
+	border: solid 1px #D8D8D8;
+	padding: 3px 3px 3px 10px;
+	}

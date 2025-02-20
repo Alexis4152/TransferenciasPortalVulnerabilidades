@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Query>
+
+    <update>
+	  <name>U_PTRA_HISTORIALCOME</name>
+	  <instruction>
+		UPDATE TRA_HISTORIAL SET FECHA=SYSDATE, IDEMPLEADO=?, COMENTARIO='?' WHERE IDTRANSFERENCIA=? AND IDESTATUS=?
+	  </instruction>
+	</update>
+	
+</Query>

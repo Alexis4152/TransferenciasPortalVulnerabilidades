@@ -1,0 +1,138 @@
+BODY
+{
+    BACKGROUND-COLOR: #FFFFFF;
+    COLOR: #333366;
+    FONT-FAMILY: Verdana;
+    font-size: 12px;  
+    background-image:url('../img/fondo.gif');
+}
+ 
+TABLE{
+	table-layout: fixed;
+}
+ 
+#container{
+	width:900px;
+	margin:auto;
+}
+ 
+#encabezado{
+	width:900px;
+	margin:0 auto;
+}
+ 
+#encabezado-medtop{
+	height:60px;
+	background:transparent url('../img/fondo_top.gif') repeat-x;
+	text-align:left;
+	margin:0 10px;
+}
+ 
+#encabezado-med{
+	background:#acc7e7;
+	margin:0 10px;
+	height:23px;
+	color: #FFF;	
+	letter-spacing:1px;
+}
+ 
+#encabezado-izq{
+	background:url('../img/remate_topizq2.gif') no-repeat 0 0;
+}
+ 
+#encabezado-der{
+	background:url('../img/remate_topder.gif') no-repeat 100% 0;
+}
+ 
+#main{
+	width:900px;
+	margin-bottom:10px;
+}
+ 
+#sidebar{
+	width:318px;
+	background-color: #E3EFFA;
+	text-align:left;
+	float:left;
+	margin-top:2px;
+	margin-bottom:5px;
+	padding-top:40px;
+	padding-bottom:40px;
+	display: block;
+}
+ 
+#contenido{
+	text-align:left;
+	background-color:transparent;
+	margin-top:2px;
+	margin-left:318px;
+ 
+	/* FONT */
+	color:#003366;
+	font-family:Arial,Helvetica,sans-serif;
+	font-size:12px;
+	font-weight:normal;
+}
+ 
+#contenido .titulo{
+	background-image:url('../img/fondo_titulo.gif');
+	width:100%;
+	text-align:center;
+	color:white;
+	font-size:14px;
+	font-family: verdana;
+	font-weight: bold;
+	margin:0pt;
+	padding-top:2px;
+	height/**/:18px !important;
+	height:20px;
+}
+ 
+#contenido p{
+	padding-left:15px;
+}
+ 
+#pie_pagina{
+	height:28px;
+	width:900px;
+	background:transparent;
+	background-image:url('../img/homec_32.gif');
+	background-repeat:no-repeat;
+	clear:both;
+}
+ 
+#pie_pagina .blue{
+	width:683px; 
+	background:#7CA9D2; 
+	height:28px; 
+	margin-left:217px;
+}
+ 
+#pie_pagina a{
+	float:right;
+	padding-top: 7px;
+	color:white;
+	font-family:Arial,Helvetica,sans-serif;
+	font-size:12px;
+	font-weight:bold;
+	text-decoration:none;
+}
+ 
+#pie_pagina a:hover{
+	text-decoration:underline;
+}
+ 
+b{
+	color: #4c7787;
+}
+
+.instrucciones {
+	font-size: 10px;
+	background-color: #F0F0F0;
+	border: solid 1px #D8D8D8;
+	padding: 3px 3px 3px 10px;
+}
+
+.left {
+	text-align: left;
+}

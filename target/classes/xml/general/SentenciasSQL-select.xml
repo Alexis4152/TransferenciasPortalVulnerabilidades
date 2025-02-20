@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Query>
+	<select>
+	  <name>S_PTRA_TRANS3</name>
+	  <instruction>
+		SELECT * FROM TRA_TRANSFERENCIA WHERE IDESTATUS=?
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANS4</name>
+	  <instruction>
+		SELECT * FROM TRA_TRANSFERENCIA WHERE IDESTATUS=? AND FECHATRANSFERENCIA='?'
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANS_IN</name>
+	  <instruction>
+		SELECT *
+ 		 FROM tra_transferencia t JOIN tra_empleado e ON t.idempleado = e.idempleado
+ 		 WHERE t.idestatus = 2 AND t.idempleado IN (?) AND t.id_region=?
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANS13</name>
+	  <instruction>
+		SELECT    tra_empleado.*, tra_perfil.DESCRIPCION, tra_regiones.desc_region
+    	FROM tra_empleado JOIN tra_perfil ON tra_empleado.idperfil = tra_perfil.idperfil
+   		JOIN TRA_REGIONES tra_regiones ON tra_empleado.id_region=tra_regiones.id_region
+   		WHERE estatususr = 1 AND TRIM (tra_empleado.usuario) = TRIM ('?')
+		ORDER BY idempleado DESC
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_EMPLEADOS</name>
+	  <instruction>
+		SELECT * FROM TRA_EMPLEADO E JOIN TRA_PERFIL P ON E.IDPERFIL=P.IDPERFIL WHERE E.ID_REGION = ? ORDER BY NOMBRE
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRAN1</name>
+	  <instruction>
+		SELECT tra_transferencia.*, tra_banco.nombre AS nombrebanco, tra_estatus.descripcion
+  		FROM tra_transferencia JOIN tra_banco ON tra_transferencia.idbanco = tra_banco.idbanco
+        JOIN tra_estatus ON tra_transferencia.idestatus = tra_estatus.idestatus
+ 		WHERE idtransferencia = ?
+	  </instruction>
+	 </select>
+	 <select>
+	  <name>S_PTRA_TRANSRG</name>
+	  <instruction>
+		SELECT * FROM TRA_TRANSFERENCIA WHERE IDESTATUS=2 AND IDEMPLEADO=? AND ID_REGION=? AND COMENTARIO IS NOT NULL  
+	  </instruction>
+	 </select>
+	 <select>
+	  <name>S_PTRA_TRANCOUNTRG</name>
+	  <instruction>
+		SELECT COUNT(*) AS TOTAL from TRA_TRANSFERENCIA WHERE IDESTATUS=2 AND IDEMPLEADO=? AND ID_REGION=? AND COMENTARIO IS NOT NULL
+	  </instruction>
+	 </select>
+	 <select>
+	  <name>S_PTRA_TRANSCOUNT</name>
+	  <instruction>
+		SELECT COUNT(*) AS TOTAL from TRA_TRANSFERENCIA WHERE IDESTATUS=? AND FECHATRANSFERENCIA &gt;= TO_DATE ('?', 'DD-MM-YYYY') 
+		AND FECHATRANSFERENCIA &lt; TO_DATE ('?', 'DD-MM-YYYY') AND ID_REGION=?
+	  </instruction>
+	 </select>
+	 <select>
+	  <name>S_PTRA_TRANSCOUNT_COMPENSACION</name>
+	  <instruction>
+		SELECT COUNT(*) AS TOTAL FROM(
+		SELECT DISTINCT T.IDTRANSFERENCIA from TRA_TRANSFERENCIA T JOIN TRA_PAGOS P ON T.IDTRANSFERENCIA = P.IDTRANSFERENCIA 
+		JOIN TRA_COMPENSACIONES c ON p.REGION = c.DIVISION AND p.LOTE = c.LOTE AND P.IMPORTE BETWEEN C.IMPORTE - 1 AND C.IMPORTE + 1 AND TRUNC(P.FECHALOTE) = TRUNC(C.FECHA_LOTE)
+		WHERE T.IDESTATUS=7 AND T.TIPOPAGOS = 'CU' AND FECHATRANSFERENCIA &gt;= TO_DATE ('?', 'DD-MM-YYYY') 
+		AND FECHATRANSFERENCIA &lt; TO_DATE ('?', 'DD-MM-YYYY') AND ID_REGION=?
+		UNION ALL
+		SELECT DISTINCT T.IDTRANSFERENCIA from TRA_TRANSFERENCIA T JOIN TRA_PAGOS P ON T.IDTRANSFERENCIA = P.IDTRANSFERENCIA 
+		JOIN TRA_COMPENSACIONES c ON p.REGION = c.DIVISION AND TO_NUMBER(p.SAP) = c.SAP  AND P.IMPORTE BETWEEN C.IMPORTE - 1 AND C.IMPORTE + 1 AND P.CUENTA = C.FACTURA
+		WHERE T.IDESTATUS=7 AND T.TIPOPAGOS = 'FA' AND FECHATRANSFERENCIA &gt;= TO_DATE ('?', 'DD-MM-YYYY') 
+		AND FECHATRANSFERENCIA &lt; TO_DATE ('?', 'DD-MM-YYYY') AND ID_REGION=?
+		UNION ALL
+		SELECT DISTINCT T.IDTRANSFERENCIA from TRA_TRANSFERENCIA T JOIN TRA_PAGOS P ON T.IDTRANSFERENCIA = P.IDTRANSFERENCIA 
+		JOIN TRA_COMPENSACIONES c ON p.REGION = c.DIVISION AND p.LOTE = c.LOTE AND P.IMPORTE BETWEEN C.IMPORTE - 1 AND C.IMPORTE + 1 AND TRUNC(P.FECHALOTE) = TRUNC(C.FECHA_LOTE)
+		JOIN TRA_COMPENSACIONES c ON p.REGION = c.DIVISION AND TO_NUMBER(p.SAP) = c.SAP  AND P.IMPORTE BETWEEN C.IMPORTE - 1 AND C.IMPORTE + 1 AND P.CUENTA = C.FACTURA
+		WHERE T.IDESTATUS=7 AND T.TIPOPAGOS = 'FA' AND FECHATRANSFERENCIA &gt;= TO_DATE ('?', 'DD-MM-YYYY') 
+		AND FECHATRANSFERENCIA &lt; TO_DATE ('?', 'DD-MM-YYYY') AND ID_REGION=?
+		)
+	  </instruction>
+	 </select>
+	 <select>
+	  <name>S_PTRA_TRANSCOUNTSF</name>
+	  <instruction>
+		SELECT COUNT(*) AS TOTAL from TRA_TRANSFERENCIA WHERE IDESTATUS=? AND ID_REGION=?
+	  </instruction>
+	 </select>
+	 <select>
+	  <name>S_PTRA_PAGOSBYTRAN</name>
+	  <instruction>
+		SELECT * FROM TRA_PAGOS WHERE IDTRANSFERENCIA=? ORDER BY REGION,TIPO,CUENTA
+	  </instruction>
+	 </select>
+	 <select>
+	  <name>S_PTRA_PAGOSBYTRANCOMPENSACION</name>
+	  <instruction>
+		SELECT p.*,C.NUMERO_DOCUMENTO NUM_DOC,c.ID_COMPENSACION,c.DESCESTATUS FROM TRA_PAGOS p LEFT JOIN TRA_COMPENSACIONES c ON p.REGION = c.DIVISION AND ((c.IMPORTE BETWEEN p.IMPORTE -1 AND p.IMPORTE + 1 AND TO_NUMBER(p.SAP) = c.SAP AND P.CUENTA = C.FACTURA) OR (p.LOTE = c.LOTE AND TRUNC(P.FECHALOTE) = TRUNC(C.FECHA_LOTE))) 
+		WHERE p.IDTRANSFERENCIA=? 
+		ORDER BY REGION,TIPO,CUENTA
+	  </instruction>
+	 </select>
+	 <select>
+	  <name>S_PTRA_PAGOS_SUM</name>
+	  <instruction>
+		SELECT REGION, LOTE, SUM(IMPORTE) AS IMPORTE FROM TRA_PAGOS WHERE IDTRANSFERENCIA=? GROUP BY REGION,LOTE ORDER BY REGION,LOTE
+	  </instruction>
+	 </select>
+	 <select>
+	  <name>S_PTRA_EMPLEADOS_AU</name>
+	  <instruction>
+		SELECT * FROM TRA_EMPLEADO E JOIN TRA_PERFIL P ON E.IDPERFIL=P.IDPERFIL WHERE E.AUDITAUSR='?' AND E.ID_REGION = ?
+	  </instruction>
+	 </select>
+	 <select>
+	  <name>S_PTRA_ACCESS_CAMPOS</name>
+	  <instruction>
+		SELECT ID2 FROM SIPAB_PARAMS WHERE VALOR3 = 'TICFULL' AND ID2 = '?'
+	  </instruction>
+	 </select>
+	 	<select>
+	  <name>S_PTRA_TRANSXID</name>
+	  <instruction>
+		SELECT * FROM TRA_TRANSFERENCIA WHERE IDTRANSFERENCIA=?
+	  </instruction>
+	</select> 
+			  <select>
+	  <name>S_PTRA_CONCEPTOS_BANCOMER</name>
+	  <instruction>
+		SELECT * FROM TRA_CONCEPTO WHERE REGION = '?'
+	  </instruction>
+	 </select>
+	  <select>
+	  <name>S_PTRA_VALIDA_NDOCUMENTO</name>
+	  <instruction>
+		SELECT NUMERO_DOCUMENTO FROM TRA_COMPENSACIONES WHERE NUMERO_DOCUMENTO IN (?)
+	  </instruction>
+	 </select>
+	 <select>
+	  <name>S_PTRA_EMPLEADOS_PETICIONES</name>
+	  <instruction>
+		SELECT  E.IDEMPLEADO, E.NOMBRE
+		FROM TRA_EMPLEADO E 
+		WHERE NOT EXISTS (SELECT *
+                     FROM TRA_PETICIONES PE
+                    WHERE  PE.IDEMPLEADO = E.IDEMPLEADO)
+                    AND E.ID_REGION = ? AND E.PUESTO LIKE '%ASESOR%' AND E.ESTATUSUSR = 1 ORDER BY NOMBRE ASC
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_COUNT_PETICIONES</name>
+	  <instruction>
+		SELECT  COUNT (*)  AS NUMERO FROM TRA_PETICIONES WHERE IDEMPLEADO = ?
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_COUNT_ALERTAS</name>
+	  <instruction>
+		SELECT  COUNT (*) AS NUMERO FROM TRA_ALERTAS WHERE COLOR = '?'
+	  </instruction>
+	</select>
+</Query>

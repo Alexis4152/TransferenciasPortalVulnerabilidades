@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Query>
+	<insert>
+	  <name>I_PTRA_HISTORIAL</name>
+	  <instruction>
+		INSERT INTO TRA_HISTORIAL(IDHISTORIAL,FECHA,IDEMPLEADO,IDESTATUS,IDTRANSFERENCIA) 
+		VALUES(historial_seq.nextval,?,?,?,?)
+	  </instruction>
+	</insert>
+	<insert>
+	  <name>I_PTRA_EMPLEADO</name>
+	  <instruction>
+		INSERT INTO TRA_EMPLEADO VALUES(empleado_seq.NEXTVAL,'?','?',1,'?',SYSDATE,?,'?','?')
+	  </instruction>
+	</insert>
+	<insert>
+	  <name>I_PTRA_NDOCUMENTO</name>
+	  <instruction>
+		INSERT INTO TRA_COMPENSACIONES (FECHA_DOCUMENTO,LOTE,NUMERO_DOCUMENTO,DIVISION,ID_COMPENSACION, FECHA_LOTE) 
+		VALUES(TO_DATE('?','dd/MM/yyyy'),?,?,'?',(SELECT MAX(ID_COMPENSACION)+1 FROM TRA_COMPENSACIONES), TO_DATE('?','dd/MM/yyyy'))
+	  </instruction>
+	</insert>
+	<insert>
+	  <name>I_PTRA_PETICION</name>
+	  <instruction>
+		INSERT INTO TRA_PETICIONES (IDEMPLEADO, HORARIO, PERIODO, ASISTENCIA, CANTIDAD_DE_MENSAJES)
+		VALUES(?, '?', '?', '?', '?')
+	  </instruction>
+	</insert>
+	<insert>
+	  <name>I_PTRA_ALERTA</name>
+	  <instruction>
+		INSERT INTO TRA_ALERTAS (COLOR, TIEMPO, IDESTATUS) VALUES('?', '?', ?)
+	  </instruction>
+	</insert>
+</Query>

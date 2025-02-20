@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="WebApp_ID" version="2.4" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	<display-name>TransferenciasPortal</display-name>
+	
+	<listener>
+	     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	 </listener>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/applicationContext.xml</param-value>
+	</context-param>
+	
+  <filter>
+      <filter-name>FiltroSesion</filter-name>
+      <filter-class>com.telcel.portal.seguridad.FiltroSesion</filter-class>
+      <init-param>
+       <param-name>urlLogin</param-name>
+       <param-value>loginRedirect.jsp</param-value>
+      </init-param>
+    </filter>
+
+    <filter-mapping>
+       <filter-name>FiltroSesion</filter-name>
+       <url-pattern>*.action</url-pattern>
+    </filter-mapping>
+	<servlet>
+   		<servlet-name>Log4JServlet</servlet-name>
+   		<servlet-class>com.telcel.portal.util.Log4JServlet</servlet-class>
+      	<init-param>
+         	<param-name>log4j-init-file</param-name>
+         	<param-value>/WEB-INF/log4j.properties</param-value>
+      	</init-param>
+	  	<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet>	
+		<servlet-name>action</servlet-name>
+		<servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+		<init-param>
+			<param-name>config</param-name>
+			<param-value>/WEB-INF/struts-config.xml</param-value>
+		</init-param>
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>2</param-value>
+		</init-param>
+		<init-param>
+			<param-name>detail</param-name>
+			<param-value>2</param-value>
+		</init-param>
+		<init-param>
+			<param-name>validate</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>action</servlet-name>
+		<url-pattern>*.action</url-pattern>
+	</servlet-mapping>
+	<welcome-file-list>
+		<welcome-file>login.jsp</welcome-file>
+
+	</welcome-file-list>
+	<service-ref>
+        <description>WSDL Service ldapService</description>
+        <service-ref-name>service/ldapService</service-ref-name>
+        <service-interface>com.telcel.gsa.dswi.test.LdapService</service-interface>
+        <wsdl-file>WEB-INF/wsdl/ldap.wsdl</wsdl-file>
+        <jaxrpc-mapping-file>WEB-INF/ldap_mapping.xml</jaxrpc-mapping-file>
+        <service-qname xmlns:pfx="http://test.dswi.gsa.telcel.com">pfx:ldapService</service-qname>
+        <port-component-ref>
+            <service-endpoint-interface>com.telcel.gsa.dswi.test.Ldap</service-endpoint-interface>
+        </port-component-ref>
+    </service-ref>
+	<resource-ref id="ResourceRef_1232043273564">
+		<res-ref-name>jdbc/trans2</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+		<res-sharing-scope>Unshareable</res-sharing-scope>
+	</resource-ref>
+	<resource-ref id="ResourceRef_1361313292431">
+		<description>
+		DB21</description>
+		<res-ref-name>jdbc/mobilepr1</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+		<res-sharing-scope>Shareable</res-sharing-scope>
+	</resource-ref>
+	<resource-ref id="ResourceRef_1361313906169">
+		<description>
+		DB22</description>
+		<res-ref-name>jdbc/mobilepr2</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+		<res-sharing-scope>Shareable</res-sharing-scope>
+	</resource-ref>
+</web-app>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Query>
+
+    <update>
+	  <name>U_PTRA_TRANSEPAGO</name>
+	  <instruction>
+		UPDATE TRA_PAGOS SET IMPORTE=?,CUENTA='?',REGION='?',TIPO='?',SAP='?' WHERE IDPAGOS=?
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_PTRA_TRAEMPNULL</name>
+	  <instruction>
+		UPDATE TRA_TRANSFERENCIA SET IDEMPLEADO=NULL,ALIAS=NULL WHERE IDTRANSFERENCIA=?
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_PTRA_TRACIERRA</name>
+	  <instruction>
+		UPDATE TRA_TRANSFERENCIA SET IDESTATUS=9,FECHATRANSFERENCIA= TO_DATE ('?', 'DD-MM-YYYY') WHERE IDTRANSFERENCIA=?
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_PTRA_TRATPAGO</name>
+	  <instruction>
+		UPDATE TRA_TRANSFERENCIA SET IDESTATUS=3,FECHATRANSFERENCIA= TO_DATE ('?', 'DD-MM-YYYY'),TIPOPAGOS='?', CORREO_EJECUTIVO = '?' WHERE IDTRANSFERENCIA=?
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_PTRA_TRANSAUTO</name>
+	  <instruction>
+		UPDATE TRA_TRANSFERENCIA SET IDESTATUS=2,FECHATRANSFERENCIA= TO_DATE ('?', 'DD-MM-YYYY') WHERE IDTRANSFERENCIA=?
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_PTRA_TRANSPROCFA</name> 
+	  <instruction>
+		UPDATE TRA_TRANSFERENCIA SET IDESTATUS=7,FECHATRANSFERENCIA= TO_DATE ('?', 'DD-MM-YYYY'), IDPROCESO=? WHERE IDTRANSFERENCIA=?
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_PTRA_TRANSPROCCOMPENSA</name> 
+	  <instruction>
+		UPDATE TRA_TRANSFERENCIA SET IDESTATUS=18,FECHATRANSFERENCIA= TO_DATE ('?', 'DD-MM-YYYY'), IDPROCESOCOMPENSACION=? WHERE IDTRANSFERENCIA=?
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_PTRA_TRANSPROCCOMPENSATRA</name> 
+	  <instruction>
+		UPDATE TRA_TRANSFERENCIA SET IDESTATUS=7 WHERE IDTRANSFERENCIA=?
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_SIBAT_PAGTRFA</name>
+	  <instruction>
+		UPDATE TRA_PAGOS SET ESTATUSPAGO = 'CL', FECHALOTE = SYSDATE, LOTE = 0 WHERE IDTRANSFERENCIA = ? AND TIPO='FA'
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_PTRA_TRANSPROC</name>
+	  <instruction>
+		UPDATE TRA_TRANSFERENCIA SET IDESTATUS=5,FECHATRANSFERENCIA= TO_DATE ('?', 'DD-MM-YYYY'),IDPROCESO=? WHERE IDTRANSFERENCIA=?
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_PTRA_TRANSRECHAZA</name>
+	  <instruction>
+		UPDATE TRA_TRANSFERENCIA SET IDESTATUS=6,COMENTARIO='?',FECHATRANSFERENCIA = TO_DATE ('?', 'DD-MM-YYYY') WHERE IDTRANSFERENCIA=?
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_PTRA_TRANSCAMBIOEST</name>
+	  <instruction>
+		UPDATE TRA_TRANSFERENCIA SET IDESTATUS=2,COMENTARIO='?' WHERE IDTRANSFERENCIA=?
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_PTRA_TRANSEMPLEADO</name>
+	  <instruction>
+		UPDATE TRA_TRANSFERENCIA SET IDEMPLEADO=?,ALIAS='?' WHERE IDTRANSFERENCIA=?
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_PTRA_TRANSPROCR</name>
+	  <instruction>
+		UPDATE TRA_TRANSFERENCIA SET IDESTATUS=10,FECHATRANSFERENCIA = TO_DATE ('?', 'DD-MM-YYYY'),IDPROCESO=? WHERE IDTRANSFERENCIA=?
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_PTRA_TRANSREGRESA</name>
+	  <instruction>
+		UPDATE TRA_TRANSFERENCIA SET IDESTATUS=?,COMENTARIO='?' WHERE IDTRANSFERENCIA=?
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_PTRA_TRANSREGRESAB</name>
+	  <instruction>
+		UPDATE TRA_TRANSFERENCIA SET IDPROCESO=?,IDESTATUS=?,COMENTARIO='?' WHERE IDTRANSFERENCIA=?
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_PTRA_PROMESAPAGO</name>
+	  <instruction>
+		UPDATE TRA_PAGOS SET ESTATUSPP='?', DESCRIPCIONPP='?' WHERE IDPAGOS= ?
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_PTRA_COMPENSATRANS</name> 
+	  <instruction>
+		UPDATE TRA_COMPENSACIONES SET IDTRANSFERENCIA = ?, IDPROCESO = ? WHERE ID_COMPENSACION IN (?)
+	  </instruction>
+	</update>
+</Query>

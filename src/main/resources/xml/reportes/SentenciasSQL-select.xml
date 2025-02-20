@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Query>
+	<select>
+	  <name>S_PTRA_TRANSUSER</name>
+	  <instruction>
+		SELECT  E.USUARIO, E.NOMBRE, SUM(T.IMPORTE) IMPORTE, COUNT(T.IDTRANSFERENCIA) IDTRANSFERENCIA  FROM TRA_TRANSFERENCIA T JOIN TRA_HISTORIAL H 
+		ON T.IDTRANSFERENCIA = H.IDTRANSFERENCIA JOIN TRA_EMPLEADO E ON T.IDEMPLEADO = E.IDEMPLEADO
+		WHERE T.IDESTATUS=7 AND H.FECHA BETWEEN TO_DATE('? 00:00:00','DD-MM-YYYY HH24:MI:SS') AND 
+		TO_DATE('? 23:59:00','DD-MM-YYYY HH24:MI:SS')  AND H.IDESTATUS IN(3) 
+		AND E.ESTATUSUSR=1 AND E.IDPERFIL IN(5,3)
+		GROUP BY E.USUARIO, E.NOMBRE
+		ORDER BY E.USUARIO
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANSUSER_DETALLE</name>
+	  <instruction>
+		SELECT  E.USUARIO, E.NOMBRE, T.FECHA FECHATRANSFERENCIA,T.IMPORTE, T.ALIAS,T.IDTRANSFERENCIA, T.TIPOPAGOS,  TO_CHAR(H.FECHA,'DD/MM/YYYY HH24:MI:SS') AS FECHA_DESGLOCE  FROM TRA_TRANSFERENCIA T JOIN TRA_HISTORIAL H 
+		ON T.IDTRANSFERENCIA = H.IDTRANSFERENCIA JOIN TRA_EMPLEADO E ON T.IDEMPLEADO = E.IDEMPLEADO
+		WHERE T.IDESTATUS=7 AND H.FECHA BETWEEN TO_DATE('? 00:00:00','DD-MM-YYYY HH24:MI:SS') AND 
+		TO_DATE('? 23:59:00','DD-MM-YYYY HH24:MI:SS')  AND H.IDESTATUS IN(3) 
+		AND E.ESTATUSUSR=1 AND E.IDPERFIL IN(5,3)
+		ORDER BY T.IDTRANSFERENCIA
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANSRECHAZADAS</name>
+	  <instruction>
+		SELECT  E.USUARIO, E.NOMBRE,  COUNT(T.IDTRANSFERENCIA) IDTRANSFERENCIA
+		FROM TRA_TRANSFERENCIA T JOIN TRA_HISTORIAL H 
+		ON T.IDTRANSFERENCIA = H.IDTRANSFERENCIA 
+		JOIN TRA_EMPLEADO E ON T.IDEMPLEADO = E.IDEMPLEADO
+		WHERE H.IDESTATUS IN(6,8)
+		AND H.FECHA BETWEEN TO_DATE('? 00:00:00','DD-MM-YYYY HH24:MI:SS') AND 
+							TO_DATE('? 23:59:00','DD-MM-YYYY HH24:MI:SS') 
+		AND E.ESTATUSUSR=1 AND E.IDPERFIL IN(5,3) ?
+		GROUP BY E.USUARIO, E.NOMBRE
+		ORDER BY E.USUARIO
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANSRECHAZADAS_DETALLE</name>
+	  <instruction>
+		SELECT  E.USUARIO, E.NOMBRE, T.FECHA FECHATRANSFERENCIA,T.IMPORTE, T.ALIAS,T.IDTRANSFERENCIA, T.TIPOPAGOS,  
+		TO_CHAR(H.FECHA,'DD/MM/YYYY HH24:MI:SS') AS FECHA_RECHAZO, H.COMENTARIO AS MOTIVO
+		FROM TRA_TRANSFERENCIA T JOIN TRA_HISTORIAL H 
+		ON T.IDTRANSFERENCIA = H.IDTRANSFERENCIA JOIN TRA_EMPLEADO E ON T.IDEMPLEADO = E.IDEMPLEADO
+		WHERE T.IDESTATUS=7 AND H.FECHA BETWEEN TO_DATE('? 00:00:00','DD-MM-YYYY HH24:MI:SS') AND 
+		TO_DATE('? 23:59:00','DD-MM-YYYY HH24:MI:SS')  AND H.IDESTATUS IN(6,8) 
+		AND E.ESTATUSUSR=1 AND E.IDPERFIL IN(5,3) ?
+		ORDER BY T.IDTRANSFERENCIA DESC
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANSBANC</name>
+	  <instruction>
+		SELECT   * 
+		FROM tra_transferencia JOIN tra_estatus ON tra_estatus.idestatus = tra_transferencia.idestatus
+   		WHERE tra_transferencia.idbanco = ?
+     	AND tra_transferencia.fechatransferencia &gt;= TO_DATE ('?', 'DD-MM-YYYY')
+     	AND tra_transferencia.fechatransferencia &lt; TO_DATE ('?', 'DD-MM-YYYY')
+     	AND tra_transferencia.id_region=?
+		ORDER BY tra_transferencia.fechatransferencia
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_REPORTE1_LIST</name>
+	  <instruction>
+		SELECT DISTINCT TT.IDTRANSFERENCIA,UPPER(TB.NOMBRE) AS BANCO,TT.* FROM
+		(
+			SELECT TP.IDTRANSFERENCIA, TO_CHAR(TP.FECHALOTE,'mm/dd/yyyy') FECHALOTE, TP.LOTE, TP.IMPORTE FROM TRA_PAGOS TP
+			WHERE TP.ESTATUSPAGO = 'CL'
+			AND TP.FECHALOTE &gt;= TO_DATE ('?', 'DD-MM-YYYY')
+			AND TP.FECHALOTE &lt; TO_DATE ('?', 'DD-MM-YYYY')
+		) PAGOSC
+		INNER JOIN
+		TRA_TRANSFERENCIA TT
+		ON (TT.IDTRANSFERENCIA = PAGOSC.IDTRANSFERENCIA ) 
+		INNER JOIN 
+		TRA_BANCO TB
+		ON (TT.IDBANCO = TB.IDBANCO) ? AND TT.ID_REGION='?'
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANSDETALLE</name>
+	  <instruction>
+		SELECT E.USUARIO AS USUARIO, TO_CHAR(H.FECHA,'DD/MM/YYYY') AS FECHA_DESGLOCE, P.REGION AS REGION,P.CUENTA AS CUENTA,  P.IMPORTE AS IMPORTE, 
+		T.IMPORTE AS IMPORTE_TRANS, T.ALIAS AS EMPRESA, H.FECHA AS FECHA_ORDER
+		FROM TRA_TRANSFERENCIA T, TRA_PAGOS P, TRA_HISTORIAL H, TRA_EMPLEADO E WHERE 
+		T.IDTRANSFERENCIA = P.IDTRANSFERENCIA AND
+		T.IDTRANSFERENCIA = H.IDTRANSFERENCIA AND 
+		T.IDESTATUS = 7 AND 
+		T.FECHATRANSFERENCIA &gt;= TO_DATE ('?', 'DD-MM-YYYY')  AND 
+		T.FECHATRANSFERENCIA &lt; TO_DATE ('?', 'DD-MM-YYYY') AND 
+		H.IDESTATUS=3 AND
+		H.IDEMPLEADO = E.IDEMPLEADO AND
+		E.ESTATUSUSR >0 
+		AND T.ID_REGION=?
+		ORDER BY FECHA_ORDER
+	  </instruction>
+	 </select>
+	 <select>
+	  <name>S_PTRA_REPORTE1</name>
+	  <instruction>
+		SELECT TT.IDBANCO AS BANCO,PAGOSC.FECHALOTE AS FECHA, count(DISTINCT(TT.IDTRANSFERENCIA)) AS TOTAL, sum(PAGOSC.importe) AS SUMA FROM
+		(
+			SELECT TP.IDTRANSFERENCIA, TO_CHAR(TP.FECHALOTE,'YYYY-MM-DD') FECHALOTE, TP.IMPORTE FROM TRA_PAGOS TP
+			WHERE TP.ESTATUSPAGO = 'CL'
+			AND TP.FECHALOTE &gt;= TO_DATE ('?', 'DD-MM-YYYY')
+			AND TP.FECHALOTE &lt; TO_DATE ('?', 'DD-MM-YYYY')
+		) PAGOSC
+		INNER JOIN
+		TRA_TRANSFERENCIA TT
+		ON (TT.IDTRANSFERENCIA = PAGOSC.IDTRANSFERENCIA )
+		AND TT.ID_REGION='?'
+		GROUP BY TT.IDBANCO,PAGOSC.FECHALOTE
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_BANCOS</name>
+	  <instruction>
+		SELECT * FROM TRA_BANCO ORDER BY IDBANCO
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_HISTORIAL</name>
+	  <instruction>
+		SELECT   nombre, tra_historial.idestatus, comentario, descripcion, TO_CHAR (fecha) AS fecha
+    		FROM tra_historial JOIN tra_empleado ON tra_historial.idempleado = tra_empleado.idempleado
+         	JOIN tra_estatus ON tra_estatus.idestatus = tra_historial.idestatus
+	   		WHERE tra_historial.idtransferencia = ?
+		ORDER BY tra_historial.fecha ASC
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_ESTATUS</name>
+	  <instruction>
+		SELECT * FROM TRA_ESTATUS ORDER BY IDESTATUS
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANSREV</name>
+	  <instruction>
+		SELECT * FROM TRA_TRANSFERENCIA WHERE IDBANCO=? AND IDESTATUS=? AND FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY') AND FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY')
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANSREVIMP</name>
+	  <instruction>
+		SELECT * FROM TRA_TRANSFERENCIA WHERE IDBANCO=? AND IDESTATUS=? FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY') AND FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY') AND IMPORTE=?
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANS10SF</name>
+	  <instruction>
+		SELECT * FROM TRA_TRANSFERENCIA JOIN TRA_BANCO ON TRA_BANCO.IDBANCO=TRA_TRANSFERENCIA.IDBANCO WHERE IDESTATUS=? 
+		AND ID_REGION=? ORDER BY FECHA,IDTRANSFERENCIA
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_REPCFEMPL</name>
+	  <instruction>
+			SELECT * FROM TRA_TRANSFERENCIA JOIN TRA_ESTATUS ON TRA_ESTATUS.IDESTATUS=TRA_TRANSFERENCIA.IDESTATUS JOIN TRA_BANCO ON 
+			TRA_BANCO.IDBANCO=TRA_TRANSFERENCIA.IDBANCO WHERE TRA_TRANSFERENCIA.IDEMPLEADO=? AND TRA_TRANSFERENCIA.IDESTATUS=? AND 
+			TRA_TRANSFERENCIA.FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY') AND TRA_TRANSFERENCIA.FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY') 
+			AND TRA_TRANSFERENCIA.ID_REGION=?
+			ORDER BY TRA_TRANSFERENCIA.FECHA,TRA_TRANSFERENCIA.IDTRANSFERENCIA
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_REPCF</name>
+	  <instruction>
+		SELECT * FROM TRA_TRANSFERENCIA JOIN TRA_ESTATUS ON TRA_ESTATUS.IDESTATUS=TRA_TRANSFERENCIA.IDESTATUS JOIN TRA_BANCO ON 
+		TRA_BANCO.IDBANCO=TRA_TRANSFERENCIA.IDBANCO WHERE TRA_TRANSFERENCIA.IDESTATUS=? AND TRA_TRANSFERENCIA.FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY') AND 
+		TRA_TRANSFERENCIA.FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY')
+		AND TRA_TRANSFERENCIA.ID_REGION=?
+		ORDER BY TRA_TRANSFERENCIA.FECHA,TRA_TRANSFERENCIA.IDTRANSFERENCIA
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_PENDIENTES_T</name>
+	  <instruction>
+		SELECT
+		TRA_TRANSFERENCIA.*,
+		TRA_BANCO.*,
+		TRA_TRANSFERENCIA.FECHATRANSFERENCIA ULTIMAFECHA,
+		TRA_TRANSFERENCIA.IDEMPLEADO IDEMPLEADO,
+		TRA_EMPLEADO.USUARIO
+		FROM TRA_TRANSFERENCIA JOIN TRA_BANCO ON TRA_BANCO.IDBANCO=TRA_TRANSFERENCIA.IDBANCO JOIN TRA_EMPLEADO ON TRA_EMPLEADO.IDEMPLEADO=TRA_TRANSFERENCIA.IDEMPLEADO
+		WHERE TRA_TRANSFERENCIA.IDESTATUS=? AND TRA_TRANSFERENCIA.ID_REGION=?
+		ORDER BY TRA_BANCO.IDBANCO,TRA_TRANSFERENCIA.IMPORTE
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_APLICADAS</name>
+	  <instruction>
+		SELECT   tra_transferencia.*, tra_banco.*,
+         TO_DATE (TO_CHAR (tra_historial.fecha, 'YYYY-MON-DD HH24:MI:SS'),
+                  'YYYY-MON-DD HH24:MI:SS'
+                 ) ultimafecha,
+         tra_historial.idempleado, tra_empleado.usuario
+    	FROM tra_transferencia JOIN tra_banco ON tra_banco.idbanco =
+                                                     tra_transferencia.idbanco
+         JOIN tra_historial ON tra_historial.idhistorial =
+                                          (SELECT MAX (idhistorial)
+                                             FROM tra_historial
+                                            WHERE tra_historial.idestatus = ?)
+         JOIN tra_empleado ON tra_empleado.idempleado =
+                                                      tra_historial.idempleado
+   		WHERE tra_transferencia.idestatus = ?
+     	AND tra_transferencia.fechatransferencia &gt;= TO_DATE ('?', 'DD-MM-YYYY')
+     	AND tra_transferencia.fechatransferencia &lt; TO_DATE ('?', 'DD-MM-YYYY')
+     	AND tra_transferencia.id_region=?
+		ORDER BY tra_transferencia.fecha
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_APLICADASCOMPENSA</name>
+	  <instruction>
+		select idtransferencia,cuentabanco,REFERENCIACLIENTE,importe,idproceso,REFERENCIABANCO,idestatus ,
+		TIPOPAGOS,nombre,fecha,idbanco,alias,ID_COMPENSACION,ultimafecha,usuario
+		from (
+		SELECT t.*, tra_banco.nombre, TO_DATE (TO_CHAR (tra_historial.fecha, 'YYYY-MON-DD HH24:MI:SS'),
+		'YYYY-MON-DD HH24:MI:SS') ultimafecha, tra_historial.idempleado, tra_empleado.usuario, c.ID_COMPENSACION
+		FROM tra_transferencia t JOIN tra_banco ON tra_banco.idbanco = t.idbanco
+		JOIN tra_historial ON tra_historial.idhistorial = (SELECT MAX (idhistorial) FROM tra_historial WHERE tra_historial.idtransferencia = idtransferencia)
+		JOIN tra_empleado ON tra_empleado.idempleado = t.idempleado
+		JOIN tra_pagos p ON t.IDTRANSFERENCIA=p.IDTRANSFERENCIA
+		JOIN TRA_COMPENSACIONES c ON p.REGION = c.DIVISION AND p.LOTE = c.LOTE AND TRUNC(P.FECHALOTE) = TRUNC(C.FECHA_LOTE)
+		WHERE t.idestatus = ? AND T.TIPOPAGOS='CU'
+		AND t.fechatransferencia &gt;= TO_DATE ('?', 'DD-MM-YYYY')
+		AND t.fechatransferencia &lt; TO_DATE ('?', 'DD-MM-YYYY')
+		AND t.id_region=?
+		AND p.LOTE &gt; 0
+		AND (C.IDTRANSFERENCIA IS  NULL OR (c.IDTRANSFERENCIA IS NOT NULL AND c.IDESTATUS = 19))
+		UNION ALL
+		SELECT t.*, tra_banco.nombre, TO_DATE (TO_CHAR (tra_historial.fecha, 'YYYY-MON-DD HH24:MI:SS'),
+		'YYYY-MON-DD HH24:MI:SS') ultimafecha, tra_historial.idempleado, tra_empleado.usuario, c.ID_COMPENSACION
+		FROM tra_transferencia t JOIN tra_banco ON tra_banco.idbanco = t.idbanco
+		JOIN tra_historial ON tra_historial.idhistorial = (SELECT MAX (idhistorial) FROM tra_historial WHERE tra_historial.idtransferencia = idtransferencia)
+		JOIN tra_empleado ON tra_empleado.idempleado = t.idempleado
+		JOIN tra_pagos p ON t.IDTRANSFERENCIA=p.IDTRANSFERENCIA
+		JOIN TRA_COMPENSACIONES c ON p.REGION = c.DIVISION AND TO_NUMBER(p.SAP) = c.SAP  AND P.IMPORTE BETWEEN C.IMPORTE - 1 AND C.IMPORTE + 1 AND P.CUENTA = C.FACTURA
+		WHERE t.idestatus = ? AND T.TIPOPAGOS='FA'
+		AND t.fechatransferencia &gt;= TO_DATE ('?', 'DD-MM-YYYY')
+		AND t.fechatransferencia &lt; TO_DATE ('?', 'DD-MM-YYYY')
+		AND t.id_region=?
+		AND p.SAP IS NOT NULL
+		AND (C.IDTRANSFERENCIA IS NULL OR (c.IDTRANSFERENCIA IS NOT NULL AND c.IDESTATUS = 19))
+		UNION ALL
+		SELECT t.*, tra_banco.nombre, TO_DATE (TO_CHAR (tra_historial.fecha, 'YYYY-MON-DD HH24:MI:SS'),
+		'YYYY-MON-DD HH24:MI:SS') ultimafecha, tra_historial.idempleado, tra_empleado.usuario, c.ID_COMPENSACION
+		FROM tra_transferencia t JOIN tra_banco ON tra_banco.idbanco = t.idbanco
+		JOIN tra_historial ON tra_historial.idhistorial = (SELECT MAX (idhistorial) FROM tra_historial WHERE tra_historial.idtransferencia = idtransferencia)
+		JOIN tra_empleado ON tra_empleado.idempleado = t.idempleado
+		JOIN tra_pagos p ON t.IDTRANSFERENCIA=p.IDTRANSFERENCIA
+		JOIN TRA_COMPENSACIONES c ON p.REGION = c.DIVISION AND TO_NUMBER(p.SAP) = c.SAP  AND P.IMPORTE BETWEEN C.IMPORTE - 1 AND C.IMPORTE + 1 AND P.CUENTA = C.FACTURA
+		JOIN TRA_COMPENSACIONES c ON p.REGION = c.DIVISION AND p.LOTE = c.LOTE AND TRUNC(P.FECHALOTE) = TRUNC(C.FECHA_LOTE)
+		WHERE t.idestatus = ? AND T.TIPOPAGOS='MIX'
+		AND t.fechatransferencia &gt;= TO_DATE ('?', 'DD-MM-YYYY')
+		AND t.fechatransferencia &lt; TO_DATE ('?', 'DD-MM-YYYY')
+		AND t.id_region=?
+		AND p.SAP IS NOT NULL
+		AND (C.IDTRANSFERENCIA IS NULL OR (c.IDTRANSFERENCIA IS NOT NULL AND c.IDESTATUS = 19))
+		) order by fecha
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANS10SF</name>
+	  <instruction>
+		SELECT * FROM TRA_TRANSFERENCIA JOIN TRA_BANCO ON TRA_BANCO.IDBANCO=TRA_TRANSFERENCIA.IDBANCO WHERE IDESTATUS=? 
+		AND ID_REGION=? ORDER BY FECHA,IDTRANSFERENCIA
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANS10</name>
+	  <instruction>
+		SELECT * FROM TRA_TRANSFERENCIA JOIN TRA_BANCO ON TRA_BANCO.IDBANCO=TRA_TRANSFERENCIA.IDBANCO WHERE IDESTATUS=? 
+		AND FECHATRANSFERENCIA &gt;= TO_DATE ('?', 'DD-MM-YYYY') AND FECHATRANSFERENCIA &lt; TO_DATE ('?', 'DD-MM-YYYY')
+		AND TRA_TRANSFERENCIA.ID_REGION=?
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANS11</name>
+	  <instruction>
+		SELECT * FROM TRA_TRANSFERENCIA WHERE IDBANCO=? AND FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY') AND FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY')
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANS7</name>
+	  <instruction>
+		SELECT * FROM TRA_TRANSFERENCIA WHERE IDBANCO=? AND IDESTATUS=2 AND IDEMPLEADO IS NULL AND FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY') 
+		AND FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY') AND ID_REGION=?
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANS8</name>
+	  <instruction>
+		SELECT * FROM TRA_TRANSFERENCIA WHERE IDBANCO=? AND IDESTATUS=2 AND IDEMPLEADO IS NULL AND FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY') 
+		AND FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY') AND IMPORTE LIKE '?' AND ID_REGION=?
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANS5</name>
+	  <instruction>
+		SELECT * FROM TRA_TRANSFERENCIA JOIN TRA_ESTATUS ON TRA_ESTATUS.IDESTATUS=TRA_TRANSFERENCIA.IDESTATUS WHERE IDBANCO=? 
+		AND FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY') AND FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY') AND ID_REGION=? ORDER BY FECHA,IDTRANSFERENCIA
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANS6</name>
+	  <instruction>
+		SELECT * FROM TRA_TRANSFERENCIA JOIN TRA_ESTATUS ON TRA_ESTATUS.IDESTATUS=TRA_TRANSFERENCIA.IDESTATUS WHERE IDBANCO=? 
+		AND FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY') AND FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY') AND IMPORTE LIKE '?' AND ID_REGION=? ORDER BY FECHA,IDTRANSFERENCIA
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANS1</name>
+	  <instruction>
+		SELECT * FROM TRA_TRANSFERENCIA WHERE IDBANCO=? AND IDESTATUS=? AND FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY')
+		AND FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY') AND ID_REGION=?  ORDER BY TIPOPAGOS,FECHA,IDTRANSFERENCIA
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANS2</name>
+	  <instruction>
+		SELECT * FROM TRA_TRANSFERENCIA WHERE IDBANCO=? AND IDESTATUS=? AND FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY') 
+		 AND FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY') AND IMPORTE=? AND ID_REGION=? ORDER BY TIPOPAGOS,FECHA,IDTRANSFERENCIA
+	  </instruction>
+	</select>
+		<select>
+	  <name>S_PTRA_TRANS_AUT1</name>
+	  <instruction>
+		SELECT * FROM TRA_TRANSFERENCIA WHERE IDBANCO=? AND IDESTATUS IN(?,?)AND FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY')
+		AND FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY') AND ID_REGION=?  ORDER BY TIPOPAGOS,FECHA,IDTRANSFERENCIA
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANS_AUT2</name>
+	  <instruction>
+		SELECT * FROM TRA_TRANSFERENCIA WHERE IDBANCO=? AND IDESTATUS IN(?,?) AND FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY') 
+		 AND FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY') AND IMPORTE=? AND ID_REGION=? ORDER BY TIPOPAGOS,FECHA,IDTRANSFERENCIA
+	  </instruction>
+	</select>
+	
+	<select>
+	  <name>S_PTRA_TRANSEDO1</name>
+	  <instruction>
+		
+		SELECT   tra_transferencia.idtransferencia as IDTRANSFERENCIA, tra_transferencia.cuentabanco as CUENTABANCO,
+         tra_transferencia.fecha as FECHA, tra_transferencia.importe as IMPORTE, tra_transferencia.tipopagos as TIPOPAGO,
+         tra_estatus.descripcion as ESTATUS, tra_transferencia.referenciacliente as CLIENTE,
+         tra_historial.IDESTATUS as ESTATUSHISTO, tra_historial.COMENTARIO as COMENTARIO
+    	FROM tra_transferencia JOIN tra_estatus
+         ON tra_estatus.idestatus = tra_transferencia.idestatus,
+         tra_historial
+   		WHERE tra_transferencia.idbanco = ?
+     		AND tra_transferencia.fecha &gt;= TO_DATE ('?', 'DD-MM-YYYY')
+     		AND tra_transferencia.fecha &lt; TO_DATE ('?', 'DD-MM-YYYY')
+     		AND tra_transferencia.importe = ?
+     		AND tra_historial.idtransferencia = tra_transferencia.idtransferencia
+     		AND tra_transferencia.id_region=?
+     		AND tra_historial.idestatus IN (1, 15)
+		ORDER BY tra_transferencia.fecha, tra_transferencia.idtransferencia
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANSEDO2</name>
+	  <instruction>
+		
+		SELECT   tra_transferencia.idtransferencia as IDTRANSFERENCIA, tra_transferencia.cuentabanco as CUENTABANCO,
+         tra_transferencia.fecha as FECHA, tra_transferencia.importe as IMPORTE, tra_transferencia.tipopagos as TIPOPAGO,
+         tra_estatus.descripcion as ESTATUS, tra_transferencia.referenciacliente as CLIENTE,
+         tra_historial.IDESTATUS as ESTATUSHISTO, tra_historial.COMENTARIO as COMENTARIO
+    	FROM tra_transferencia JOIN tra_estatus
+         ON tra_estatus.idestatus = tra_transferencia.idestatus,
+         tra_historial
+   		WHERE tra_transferencia.idbanco = ?
+     		AND tra_transferencia.fecha &gt;= TO_DATE ('?', 'DD-MM-YYYY')
+     		AND tra_transferencia.fecha &lt; TO_DATE ('?', 'DD-MM-YYYY')
+     		AND tra_historial.idtransferencia = tra_transferencia.idtransferencia
+     		AND tra_transferencia.id_region='?'
+     		AND tra_historial.idestatus IN (1, 15)
+		ORDER BY tra_transferencia.fecha, tra_transferencia.idtransferencia
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANSPAGONO</name>
+	  <instruction>
+		SELECT T.IDTRANSFERENCIA AS IDTRANSFERENCIA, T.FECHA AS FECHA,  T.IMPORTE AS IMPORTETRANS, B.NOMBRE AS BANCO, SUM(P.IMPORTE) AS TOTAL  
+  			 FROM TRA_PAGOS P, TRA_TRANSFERENCIA T, TRA_BANCO B 
+   			WHERE P.TIPO='CU' 
+     			AND P.ESTATUSPAGO='CL' 
+     			AND P.REGION='?' 
+     			AND P.LOTE= ?
+     			AND TO_CHAR(P.FECHALOTE,'DD/MM/YYYY')='?' AND T.IDTRANSFERENCIA = P.IDTRANSFERENCIA
+     			AND T.IDBANCO = B.IDBANCO
+     			AND T.ID_REGION=?
+		GROUP BY  T.IDTRANSFERENCIA,  T.FECHA,  T.IMPORTE, B.NOMBRE
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_BATCH</name>
+	  <instruction>
+		SELECT * FROM TRA_BATCH WHERE CORREO = '?' AND PARAMETRO = '?' AND ESTATUS IN (?)
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_COMPENSA1</name>
+	  <instruction>
+	  	SELECT * FROM (
+		SELECT T.*,P.IMPORTE IMPORTEPAGO,P.LOTE,C.NUMERO_DOCUMENTO,c.ID_COMPENSACION FROM TRA_TRANSFERENCIA T JOIN tra_pagos p ON t.IDTRANSFERENCIA=p.IDTRANSFERENCIA
+		JOIN TRA_COMPENSACIONES c ON p.REGION = c.DIVISION AND p.LOTE = c.LOTE AND TRUNC(P.FECHALOTE) = TRUNC(C.FECHA_LOTE) WHERE T.IDBANCO=? AND T.IDESTATUS=? AND T.TIPOPAGOS = 'CU' AND T.FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY')
+		AND T.FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY') AND T.ID_REGION=? AND p.LOTE &gt; 0  AND (C.IDTRANSFERENCIA IS  NULL OR (c.IDTRANSFERENCIA IS NOT NULL AND c.IDESTATUS = 19))
+		UNION ALL
+		SELECT T.*,P.IMPORTE IMPORTEPAGO,P.LOTE,C.NUMERO_DOCUMENTO,c.ID_COMPENSACION FROM TRA_TRANSFERENCIA T JOIN tra_pagos p ON t.IDTRANSFERENCIA=p.IDTRANSFERENCIA
+		JOIN TRA_COMPENSACIONES c ON p.REGION = c.DIVISION AND TO_NUMBER(p.SAP) = c.SAP AND P.IMPORTE BETWEEN C.IMPORTE - 1 AND C.IMPORTE + 1 AND P.CUENTA = C.FACTURA WHERE T.IDBANCO=? AND T.IDESTATUS=? AND T.TIPOPAGOS = 'FA' AND c.IMPORTE BETWEEN p.IMPORTE - 1 AND p.IMPORTE + 1 AND T.FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY')
+		AND T.FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY') AND T.ID_REGION=? AND p.SAP IS NOT NULL AND (C.IDTRANSFERENCIA IS  NULL OR (c.IDTRANSFERENCIA IS NOT NULL AND c.IDESTATUS = 19))
+		UNION ALL
+		SELECT T.*,P.IMPORTE IMPORTEPAGO,P.LOTE,C.NUMERO_DOCUMENTO,c.ID_COMPENSACION FROM TRA_TRANSFERENCIA T JOIN tra_pagos p ON t.IDTRANSFERENCIA=p.IDTRANSFERENCIA
+		JOIN TRA_COMPENSACIONES c ON p.REGION = c.DIVISION AND p.LOTE = c.LOTE AND TRUNC(P.FECHALOTE) = TRUNC(C.FECHA_LOTE)
+		JOIN TRA_COMPENSACIONES c ON p.REGION = c.DIVISION AND TO_NUMBER(p.SAP) = c.SAP AND P.IMPORTE BETWEEN C.IMPORTE - 1 AND C.IMPORTE + 1 AND P.CUENTA = C.FACTURA WHERE T.IDBANCO=? AND T.IDESTATUS=? AND T.TIPOPAGOS = 'MIX' AND c.IMPORTE BETWEEN p.IMPORTE - 1 AND p.IMPORTE + 1 AND T.FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY')
+		AND T.FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY') AND T.ID_REGION=? AND p.SAP IS NOT NULL AND (C.IDTRANSFERENCIA IS  NULL OR (c.IDTRANSFERENCIA IS NOT NULL AND c.IDESTATUS = 19))
+		)
+		ORDER BY TIPOPAGOS,FECHA,IDTRANSFERENCIA
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_COMPENSA2</name>
+	  <instruction>
+		SELECT * FROM (
+		SELECT T.*,P.IMPORTE IMPORTEPAGO,P.LOTE,C.NUMERO_DOCUMENTO,c.ID_COMPENSACION FROM TRA_TRANSFERENCIA T JOIN tra_pagos p ON t.IDTRANSFERENCIA=p.IDTRANSFERENCIA
+		JOIN TRA_COMPENSACIONES c ON p.REGION = c.DIVISION AND p.LOTE = c.LOTE AND TRUNC(P.FECHALOTE) = TRUNC(C.FECHA_LOTE) WHERE T.IDBANCO=? AND T.IDESTATUS=? AND T.TIPOPAGOS = 'CU' AND T.FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY') 
+		AND T.FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY') AND T.IMPORTE=? AND T.ID_REGION=? AND p.LOTE &gt; 0 AND (C.IDTRANSFERENCIA IS  NULL OR (c.IDTRANSFERENCIA IS NOT NULL AND c.IDESTATUS = 19))
+		UNION ALL
+		SELECT T.*,P.IMPORTE IMPORTEPAGO,P.LOTE,C.NUMERO_DOCUMENTO,c.ID_COMPENSACION FROM TRA_TRANSFERENCIA T JOIN tra_pagos p ON t.IDTRANSFERENCIA=p.IDTRANSFERENCIA
+		JOIN TRA_COMPENSACIONES c ON p.REGION = c.DIVISION AND TO_NUMBER(p.SAP) = c.SAP AND P.IMPORTE BETWEEN C.IMPORTE - 1 AND C.IMPORTE + 1 AND P.CUENTA = C.FACTURA WHERE T.IDBANCO=? AND T.IDESTATUS=? AND T.TIPOPAGOS = 'FA' AND c.IMPORTE BETWEEN p.IMPORTE - 1 AND p.IMPORTE + 1 AND T.FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY') 
+		AND T.FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY') AND T.IMPORTE=? AND T.ID_REGION=? AND p.SAP IS NOT NULL AND (C.IDTRANSFERENCIA IS  NULL OR (c.IDTRANSFERENCIA IS NOT NULL AND c.IDESTATUS = 19))
+		UNION ALL
+		SELECT T.*,P.IMPORTE IMPORTEPAGO,P.LOTE,C.NUMERO_DOCUMENTO,c.ID_COMPENSACION FROM TRA_TRANSFERENCIA T JOIN tra_pagos p ON t.IDTRANSFERENCIA=p.IDTRANSFERENCIA
+		JOIN TRA_COMPENSACIONES c ON p.REGION = c.DIVISION AND p.LOTE = c.LOTE AND TRUNC(P.FECHALOTE) = TRUNC(C.FECHA_LOTE)
+		JOIN TRA_COMPENSACIONES c ON p.REGION = c.DIVISION AND TO_NUMBER(p.SAP) = c.SAP AND P.IMPORTE BETWEEN C.IMPORTE - 1 AND C.IMPORTE + 1 AND P.CUENTA = C.FACTURA WHERE T.IDBANCO=? AND T.IDESTATUS=? AND T.TIPOPAGOS = 'MIX' AND c.IMPORTE BETWEEN p.IMPORTE - 1 AND p.IMPORTE + 1 AND T.FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY') 
+		AND T.FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY') AND T.IMPORTE=? AND T.ID_REGION=? AND p.SAP IS NOT NULL AND (C.IDTRANSFERENCIA IS  NULL OR (c.IDTRANSFERENCIA IS NOT NULL AND c.IDESTATUS = 19))
+		)
+		ORDER BY TIPOPAGOS,FECHA,IDTRANSFERENCIA
+	  </instruction>
+	</select>
+		<select>
+	  <name>S_PTRA_REFCFEMPL</name>
+	  <instruction>
+			SELECT TRA_TRANSFERENCIA.*, TRA_EMPLEADO.NOMBRE NOMBREUSUARIO, TRA_ESTATUS.DESCRIPCION, TRA_BANCO.NOMBRE FROM TRA_TRANSFERENCIA JOIN TRA_ESTATUS ON TRA_ESTATUS.IDESTATUS=TRA_TRANSFERENCIA.IDESTATUS JOIN TRA_BANCO ON 
+			TRA_BANCO.IDBANCO=TRA_TRANSFERENCIA.IDBANCO JOIN TRA_EMPLEADO ON TRA_EMPLEADO.IDEMPLEADO = TRA_TRANSFERENCIA.IDEMPLEADO 
+			WHERE TRA_TRANSFERENCIA.IDEMPLEADO=? AND TRA_TRANSFERENCIA.IDESTATUS=? AND 
+			TRA_TRANSFERENCIA.FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY') AND TRA_TRANSFERENCIA.FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY') 
+			AND TRA_TRANSFERENCIA.ID_REGION=? AND PK_ID_REFERENCIA IS NOT NULL
+			ORDER BY TRA_TRANSFERENCIA.FECHA,TRA_TRANSFERENCIA.IDTRANSFERENCIA
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_REFCF</name>
+	  <instruction>
+		SELECT TRA_TRANSFERENCIA.*, TRA_EMPLEADO.NOMBRE NOMBREUSUARIO, TRA_ESTATUS.DESCRIPCION, TRA_BANCO.NOMBRE FROM TRA_TRANSFERENCIA JOIN TRA_ESTATUS ON TRA_ESTATUS.IDESTATUS=TRA_TRANSFERENCIA.IDESTATUS JOIN TRA_BANCO ON 
+		TRA_BANCO.IDBANCO=TRA_TRANSFERENCIA.IDBANCO JOIN TRA_EMPLEADO ON TRA_EMPLEADO.IDEMPLEADO = TRA_TRANSFERENCIA.IDEMPLEADO
+		WHERE TRA_TRANSFERENCIA.IDEMPLEADO IS NOT NULL AND TRA_TRANSFERENCIA.IDESTATUS=? AND TRA_TRANSFERENCIA.FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY') AND 
+		TRA_TRANSFERENCIA.FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY')
+		AND TRA_TRANSFERENCIA.ID_REGION=? AND PK_ID_REFERENCIA IS NOT NULL
+		ORDER BY TRA_TRANSFERENCIA.FECHA,TRA_TRANSFERENCIA.IDTRANSFERENCIA
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_PETICIONES</name>
+	  <instruction>
+		 SELECT TE.NOMBRE, TP.*  FROM TRA_PETICIONES TP JOIN TRA_EMPLEADO TE ON TP.IDEMPLEADO = TE.IDEMPLEADO AND TE.ID_REGION 	= '?' AND TE.PUESTO LIKE '%ASESOR%'
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_ALERTAS</name>
+	  <instruction>
+ 		 SELECT TA.*, TE.DESCRIPCION FROM TRA_ALERTAS TA JOIN TRA_ESTATUS TE ON TA.IDESTATUS = TE.IDESTATUS
+	  </instruction>
+	</select>
+	<select>
+		<name>S_PTRA_HISTORIAL_BY_FECHA</name>
+			<instruction>
+				SELECT  TH.IDEMPLEADO,  TH.IDESTATUS, TO_CHAR (TH.FECHA) AS FECHA FROM TRA_HISTORIAL TH WHERE IDTRANSFERENCIA = ? AND FECHA &gt;= TO_DATE ('?', 'DD-MM-YYYY') 
+				AND FECHA &lt; TO_DATE ('?', 'DD-MM-YYYY') AND IDESTATUS IN (1,2,3) ORDER BY FECHA DESC
+			</instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_PAGOS_CICLO</name>
+	  <instruction>
+	  SELECT ciclo,count(*) cantidad FROM (
+		SELECT DISTINCT tp.CICLO, tp.IDTRANSFERENCIA CANTIDAD FROM TRA_PAGOS tp LEFT JOIN TRA_TRANSFERENCIA tt 
+		ON (tp.IDTRANSFERENCIA = tt.IDTRANSFERENCIA) WHERE (tt.FECHA BETWEEN TO_DATE ('?', 'YYYY-MM-DD') 
+		AND TO_DATE ('?', 'YYYY-MM-DD')) AND CICLO IS NOT NULL AND TT.IDESTATUS = 7 
+		) GROUP BY ciclo ORDER BY ciclo DESC
+	  </instruction>
+	</select>
+	<select>
+	  <name>S_PTRA_TRANSFER_MONTO</name>
+	  <instruction>
+		SELECT te.NOMBRE, tt.IMPORTE FROM TRA_EMPLEADO te LEFT JOIN TRA_TRANSFERENCIA tt ON (te.IDEMPLEADO = tt.IDEMPLEADO) WHERE (tt.FECHA BETWEEN TO_DATE ('?', 'YYYY-MM-DD') AND TO_DATE ('?', 'YYYY-MM-DD')) AND tt.IDESTATUS = 7 AND tt.PK_ID_REFERENCIA IS NOT NULL ORDER BY te.NOMBRE
+	  </instruction>
+	</select>
+	<select>
+	<name>S_PTRA_TRANSFER_INGRESOS</name>
+	<instruction>
+		SELECT E.USUARIO, E.NOMBRE, TO_CHAR(T.FECHA,'DD/MM/YYYY') AS FECHA_TRANSFERENCIA,T.IMPORTE,
+		T.ALIAS,T.IDTRANSFERENCIA, T.TIPOPAGOS, TO_CHAR(H.FECHA,'DD/MM/YYYY')
+		AS FECHA_DESGLOCE, TO_CHAR(H.FECHA,'HH24:MI:SS') AS HORA_DESGLOCE,
+		REFERENCIACLIENTE, B.NOMBRE AS BANCO, P.CUENTA
+		FROM TRA_TRANSFERENCIA T JOIN TRA_HISTORIAL H
+		ON T.IDTRANSFERENCIA = H.IDTRANSFERENCIA
+		JOIN TRA_EMPLEADO E
+		ON T.IDEMPLEADO = E.IDEMPLEADO
+		JOIN TRA_BANCO B
+		ON T.IDBANCO = B.IDBANCO
+		JOIN TRA_PAGOS P
+		ON T.IDTRANSFERENCIA = P.IDTRANSFERENCIA
+		WHERE T.IDESTATUS=7 AND
+		H.FECHA BETWEEN TO_DATE('?','YYYY-MM-DD') AND
+		TO_DATE('?','YYYY-MM-DD')
+		AND H.IDESTATUS IN(3)
+		AND E.ESTATUSUSR=1 AND E.IDPERFIL IN(5,3)
+		ORDER BY T.IDTRANSFERENCIA
+	</instruction>
+</select>
+</Query>

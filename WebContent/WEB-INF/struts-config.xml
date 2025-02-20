@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+<struts-config>
+
+
+		   <form-beans>
+		      <form-bean name="uploadForm" type="com.telcel.portal.util.UploadForm" />
+		   </form-beans>
+
+	<!-- Reenvíos globales -->
+	<global-forwards>
+	</global-forwards>
+
+	<!-- Correlaciones de acción -->
+	<action-mappings>
+		<action path="/TemplateAction"  parameter="parameter"  type="org.springframework.web.struts.DelegatingActionProxy">
+		   
+		   <forward name="template" path="/template.jsp"/>
+		   <forward name="pestana" path="/pestana.jsp"/> 
+		   <forward name="carga" path="/menu/carga.jsp"/> 
+		   <forward name="autorizaTransferencia" path="/menu/autorizaTransferencia.jsp"/>
+		   <forward name="listaTransferenciasAutoriza" path="/menu/listaTransferenciasAutoriza.jsp"/>
+		   <forward name="autorizaTransferenciaResultado" path="/menu/autorizaTransferenciaResultado.jsp"/>
+		   <forward name="aplicaTransferencia" path="/menu/aplicaTransferencia.jsp"/>
+		   <forward name="aplicaTransferenciaLista" path="/menu/aplicaTransferenciaLista.jsp"/>
+		   <forward name="detalleTransferencia" path="/menu/detalleTransferencia.jsp"/>
+		   <forward name="detalleTransferenciaResultado" path="/menu/detalleTransferenciaResultado.jsp"/>
+		   <forward name="detalleTransferenciaResultadoLista" path="/menu/detalleTransferenciaResultadoLista.jsp"/>
+		   <forward name="rechazaTransferenciaResultado" path="/menu/rechazaTransferenciaResultado.jsp"/>
+		   <forward name="busquedaListaTransferencias" path="/menu/busquedaListaTransferencias.jsp"/>
+		   <forward name="resultadoListaTransferencia" path="/menu/listaTransferencias.jsp"/>
+		   <forward name="usuarios" path="/menu/usuarios.jsp"/>
+		   <forward name="usuariosLista" path="/menu/usuariosLista.jsp"/>
+		   <forward name="usuarioAgregar" path="/menu/usuarioAgregar.jsp"/>
+		   <forward name="dividirTransferencia" path="/menu/dividirTransferencia.jsp"/>
+		   <forward name="listaTransferenciaDividida" path="/menu/listaTransferenciaDividida.jsp"/>
+	       <forward name="resultadoDividirCerrar" path="/menu/resultadoDividirCerrar.jsp"/>
+		   <forward name="cantidadDivision" path="/menu/cantidadDivision.jsp"/>
+		   <forward name="desglosarTransferencia" path="/menu/desglosarTransferencia.jsp"/>
+		   <forward name="desgloseListaTransferencias" path="/menu/desgloseListaTransferencias.jsp"/>
+		   <forward name="desgloseTomarResultado" path="/menu/desgloseTomarResultado.jsp"/>
+		   <forward name="desgloseUsuario" path="/menu/desgloseUsuario.jsp"/>
+		   <forward name="detalleDesgloseUsuario" path="/menu/detalleDesgloseUsuario.jsp"/>
+		   <forward name="desgloseListaPagos" path="/menu/desgloseListaPagos.jsp"/>
+		   <forward name="desgloseAddPago" path="/menu/desgloseAddPago.jsp"/>
+		   <forward name="desgloseAddPagoResultado" path="/menu/desgloseAddPagoResultado.jsp"/>
+		   <forward name="revertirTransferencia" path="/menu/revertirTransferencia.jsp"/>
+		   <forward name="revierteListaTransferencias" path="/menu/revierteListaTransferencias.jsp"/>
+		   <forward name="desgloseSoltarTransferencia" path="/menu/desgloseSoltarTransferencia.jsp"/>
+		   <forward name="cierraResultado" path="/menu/cierraResultado.jsp"/>
+		   <forward name="detalleTransferenciaExcel" path="/menu/detalleTransferenciaExcel.jsp"/>
+		   <forward name="detalleDesgloseUsuarioExcel" path="/menu/detalleDesgloseUsuarioExcel.jsp"/>
+		   <forward name="revertirTransferenciaResultado" path="/menu/revertirTransferenciaResultado.jsp"/>
+		   <forward name="detalleTransferenciaResultadoPendiente" path="/menu/detalleTransferenciaResultadoPendiente.jsp"/>
+		   <forward name="viewport" path="/viewport.jsp"/>
+		   <forward name="verHistorial" path="/menu/verHistorial.jsp"/>
+		   <forward name="cargarNumeroDocumento" path="/compensaciones/carga.jsp"/>
+		   <forward name="compensarTransferencias" path="/compensaciones/compensaTransferencia.jsp"/>
+		   <forward name="compensaTransferenciaLista" path="/compensaciones/compensaTransferenciaLista.jsp"/>
+		   <forward name="detalleTransferenciaCompensacion" path="/compensaciones/detalleTransferencia.jsp"/>
+		   <forward name="detalleTransferenciaCompensacionExcel" path="/compensaciones/detalleTransferenciaExcel.jsp"/>
+		   <forward name="validadorCuentas" path="/menu/validadorCuentas.jsp"/>
+		   <forward name="validadorCuentasReporte" path="/menu/listaValidadorCuentas.jsp"/>
+		   <forward name="validadorCuentasExcel" path="/menu/validadorCuentasExcel.jsp"/>
+		   <forward name="getBandeja" path="/menu/bandejaEntrada.jsp"/>	
+		   <forward name="transferenciasByReferencia" path="/menu/transferenciasByReferencia.jsp"/>	
+		   <forward name="getPeticiones" path="/menu/peticionesLista.jsp"/>	
+		   <forward name="editPeticion" path="/menu/editarPeticion.jsp"/>		
+		   <forward name="nuevaPeticion" path="/menu/nuevaPeticion.jsp"/>	
+		   <forward name="alertas" path="/menu/alertas.jsp"/>	
+		   <forward name="addAlerta" path="/menu/nuevaAlerta.jsp"/>	   
+		   <forward name="editAlerta" path="/menu/editarAlerta.jsp"/>
+		   	   
+		</action>
+		
+		<action path="/TiempoReal" parameter="parameter"  type="com.telcel.portal.actions.TiempoRealAction">
+		   
+		   <forward name="monitorTransferencias" path="/monitorTransferencias.jsp"/>
+		   <forward name="listaTransferencias" path="/transferencias/listaTransferencias.jsp"/>
+		   <forward name="listaTransferenciasExcel" path="/menu/listaTransferenciasExcel.jsp"/>
+		   <forward name="listaTransferenciasCompensacion" path="/compensaciones/listaTransferencias.jsp"/>
+		   <forward name="listaTransferenciasExcelCompensacion" path="/compensaciones/listaTransferenciasExcel.jsp"/>
+		
+		</action>
+		
+		<action path="/ListaTransferencias" parameter="parameter"  type="com.telcel.portal.actions.ListaTransferenciasAction">
+		   
+		   <forward name="monitorTransferencias" path="/monitorTransferencias.jsp"/>
+		   <forward name="listaTransferencias" path="/transferencias/listaTransferencias.jsp"/>
+		   <forward name="listaTransferenciasExcel" path="/menu/listaTransferenciasExcel.jsp"/>
+		   <forward name="listaTransferenciasCompensacion" path="/compensaciones/listaTransferencias.jsp"/>
+		   <forward name="listaTransferenciasExcelCompensacion" path="/compensaciones/listaTransferenciasExcel.jsp"/>
+		
+		</action>
+		
+		
+		<action path="/CargaArchivo" name="uploadForm" parameter="parameter" validate="true"  scope="request" input="/menu/carga.jsp" type="com.telcel.portal.actions.CargaArchivoAction">
+		   
+		   <forward name="cargaResultado" path="/menu/cargaResultado.jsp"/>
+		
+		</action>
+		
+		<action path="/CargaArchivoCompensacion" name="uploadForm"
+			parameter="parameter" validate="true" scope="request"
+			input="/compensaciones/carga.jsp"
+			type="com.telcel.portal.actions.CargaArchivoCompensacion">
+		
+			<forward name="cargaResultado" path="/menu/cargaResultado.jsp" />
+		
+		</action>	
+
+		<action path="/Login" parameter="parameter"  type="com.telcel.portal.actions.LoginAction">
+		   
+		   <forward name="loginResultado" path="/loginResultado.jsp"/>
+		   <forward name="loginRedirect" path="/loginRedirect.jsp"/>
+		
+		</action>
+		
+		<action path="/Reportes" parameter="parameter"  type="com.telcel.portal.actions.ReportesAction">
+		   
+		   <forward name="transferenciasAplicadas" path="/reportes/transferenciasAplicadas.jsp"/>
+		   <forward name="transferenciasDesglosadas" path="/reportes/transferenciasDesglosadas.jsp"/>
+		   <forward name="transferenciasByEstadoDeCuenta" path="/reportes/transferenciasByEstadoDeCuenta.jsp"/>
+		   <forward name="transferenciasByEstatus" path="/reportes/transferenciasByEstatus.jsp"/>
+		   <forward name="listaTransferenciasEstatus" path="/reportes/listaTransferenciasEstatus.jsp"/>
+		   <forward name="transferenciasByEstatusExcel" path="/reportes/transferenciasByEstatusExcel.jsp"/>
+		   <forward name="transferenciasByBanco" path="/reportes/transferenciasByBanco.jsp"/>
+		   <forward name="transferenciasByBancoExcel" path="/reportes/transferenciasByBancoExcel.jsp"/>
+		    <forward name="transferenciasByUserExcel" path="/reportes/transferenciasByUserExcel.jsp"/>
+		   <forward name="listaTransferenciasBanco" path="/reportes/listaTransferenciasBanco.jsp"/>
+		   <forward name="concentradoTransferenciasUsuario" path="/reportes/concentradoTransferenciasUsuario.jsp"/>
+		   <forward name="listaTransferenciasByUser" path="/reportes/listaTransferenciasUser.jsp"/>
+		    <forward name="listaEstadoDeCuenta" path="/reportes/listaEstadoDeCuenta.jsp"/>
+		   <forward name="concentradoTransferenciasAplicadas" path="/reportes/concentradoTransferenciasAplicadas.jsp"/>
+    	   <forward name="concentradoTransferenciasAplicadasExcel" path="/reportes/concentradoTransferenciasAplicadasExcel.jsp"/>
+    	    <forward name="concentradoTransferenciasDesglosadas" path="/reportes/concentradoTransferenciasDesglosadas.jsp"/>
+    	   <forward name="concentradoTransferenciasDesglosadasExcel" path="/reportes/concentradoTransferenciasDesglosadasExcel.jsp"/>
+    	   <forward name="listaPagosReporte" path="/reportes/listaPagosReporte.jsp"/>
+    	   <forward name="resultadoTransferencia" path="/reportes/resultadoTransferencia.jsp"/>
+    	   <forward name="listaPagosReporteExcel" path="/reportes/listaPagosReporteExcel.jsp"/>
+		   <forward name="marcaTransferencia" path="/reportes/marcaTransferencia.jsp"/>
+		    <forward name="marcaTransferenciaResultado" path="/reportes/marcaTransferenciaResultado.jsp"/>
+		    <forward name="transferenciasEstadoDeCuentaExcel" path="/reportes/transferenciasEstadoDeCuentaExcel.jsp"/>
+		     <forward name="transferenciasByPagosNoIdent" path="/reportes/transferenciasByPagosNoIdent.jsp"/>
+		     <forward name="transferenciasByUser" path="/reportes/transferenciasByUser.jsp"/>
+		    <forward name="transferenciasRechazadas" path="/reportes/transferenciasRechazadas.jsp"/>
+		    <forward name="concentradoTransferenciasRechazadas" path="/reportes/concentradoTransferenciasRechazadas.jsp"/>
+		    <forward name="listaTransferenciasRechazadas" path="/reportes/listaTransferenciasRechazadas.jsp"/>
+		    <forward name="listaPagosNoIdentificados" path="/reportes/listaPagosNoIdentificados.jsp"/>
+		     <forward name="pagosNoIdentExcel" path="/reportes/reportePagosNoIdentExcel.jsp"/>
+		     <forward name="reporteCiclo" path="/reportes/reporteCiclo.jsp"/>
+		     <forward name="graficaCiclos" path="/reportes/graficaCiclos.jsp"/>
+		     <forward name="reportePeticiones" path="/reportes/reportePeticiones.jsp"/>
+		     <forward name="listaPeticiones" path="/reportes/listaPeticiones.jsp"/>
+		     <forward name="reporteTransIngresos" path="/reportes/reporteTransIngresos.jsp"/>
+		     <forward name="listaTransIngresos" path="/reportes/listaTransIngresos.jsp"/>
+		     <forward name="listaTransIngresosExcel" path="/reportes/listaTrasIngresosExcel.jsp"/>
+		     
+		</action> 
+		
+		<action path="/CargaArchivoDesglose"  name="uploadForm" type="com.telcel.portal.actions.CargaArchivoDesglose">
+		   
+		    <forward name="cargaResultado" path="/menu/cargaResultadoDesglose.jsp"/>
+		  
+		</action> 
+		
+		<action path="/CargaArchivoLotes"  name="uploadForm" type="com.telcel.portal.actions.CargaArchivoLotes">
+		   
+		    <forward name="cargaResultadoPagos" path="/menu/cargaResultadoPagos.jsp"/>
+		     <forward name="cargaResultadoError" path="/menu/cargaResultadoError.jsp"/>
+		  	<forward name="listaPagosNoIdentificados" path="/reportes/listaPagosNoIdentificados.jsp"/>
+		</action> 
+
+		<action path="/CargaArchivoValidadorCuentas" name="uploadForm" parameter="parameter"  type="com.telcel.portal.actions.CargaArchivoValidadorCuentas">
+		   
+		   <forward name="cargaResultadoCuentas" path="/menu/validadorCuentasResultado.jsp"/>
+		
+		</action>
+		
+	</action-mappings>
+
+	<controller maxFileSize="10M" inputForward="true" />
+	
+	
+</struts-config>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Query>
+    <insert>
+	  <name>I_PTRA_PAGOS</name>
+	  <instruction>
+		INSERT INTO TRA_PAGOS (IDPAGOS,TIPO,CUENTA,IMPORTE,IDEMPLEADO,IDTRANSFERENCIA,REGION,SAP) 
+		VALUES (pagos_seq.nextval,'?','?',?,?,?,'?','?')
+	  </instruction>
+	</insert>
+	<insert>
+	  <name>I_PTRA_HISTORIAL</name>
+	  <instruction>
+		INSERT INTO TRA_HISTORIAL(IDHISTORIAL,FECHA,IDEMPLEADO,IDESTATUS,IDTRANSFERENCIA) 
+		VALUES(historial_seq.nextval,SYSDATE,?,?,?)
+	  </instruction>
+	</insert>
+	<insert>
+	  <name>I_PTRA_TRANS</name>
+	  <instruction>
+		INSERT INTO TRA_TRANSFERENCIA(IDTRANSFERENCIA,FECHA,IMPORTE,CUENTABANCO,REFERENCIABANCO,REFERENCIACLIENTE,IDBANCO,IDESTATUS,FECHATRANSFERENCIA,ID_REGION) 
+		VALUES(?,TO_DATE ('?', 'DD-MM-YYYY'),?,'?','?','?',?,?,TO_DATE ('?', 'DD-MM-YYYY'),?)
+	  </instruction>
+	</insert>
+	<insert>
+	  <name>I_PTRA_PROCESOFA</name>
+	  <instruction>
+		INSERT INTO TRA_PROCESO VALUES(?, TO_DATE ('?', 'DD-MM-YYYY'),SYSDATE,'OK',?,?,'?')
+	  </instruction>
+	</insert>
+	<insert>
+	  <name>I_PTRA_PROCESOTEMP</name>
+	  <instruction>
+		INSERT INTO TRA_PROCESO VALUES(?, TO_DATE ('?', 'DD-MM-YYYY'),null,'ESP',?,?,'?')
+	  </instruction>
+	</insert>
+	<insert>
+	  <name>I_PTRA_HISTORIALCOME</name>
+	  <instruction>
+		INSERT INTO TRA_HISTORIAL(IDHISTORIAL,FECHA,IDEMPLEADO,IDESTATUS,IDTRANSFERENCIA,COMENTARIO) VALUES(historial_seq.nextval,SYSDATE,?,?,?,'?')
+	  </instruction>
+	</insert>
+	<insert>
+	  <name>I_PTRA_PROCESOPROMESA</name>
+	  <instruction>
+		INSERT INTO SIPAB_PARAMS_TMP VALUES('','?','PEN','?','','R09',SYSDATE,'')
+	  </instruction>
+	</insert>
+			<insert>
+	  <name>I_PTRA_BATCH</name>
+	  <instruction>
+		INSERT INTO TRA_BATCH (ID_REGISTRO, CORREO, REGION, PARAMETRO, ESTATUS, FECHAINICIO, FECHAFIN) VALUES(BATCH_SEQ.nextval, '?', '?', '?', '?', '?', '')
+	  </instruction>
+	</insert>
+</Query>

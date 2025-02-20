@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+							 http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+							 http://www.springframework.org/schema/tx
+							 http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+							 http://www.springframework.org/schema/aop
+							 http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+		
+		
+
+	
+	
+	<bean id="TransferenciasDaoImp" class="com.telcel.portal.dao.implementacion.TransferenciasDaoDmpImp">
+
+		
+	</bean>
+	
+	<bean id="TransferenciasDaoImp2" class="com.telcel.portal.dao.implementacion.TransDaoDmpImp2">
+
+		
+	</bean>
+	
+	<bean id="TransferenciasDaoImp3" class="com.telcel.portal.dao.implementacion.TransferenciasDaoImp3">
+
+		
+	</bean>
+	
+	<bean id="TransferenciasDaoConsultaImp" class="com.telcel.portal.dao.implementacion.TransferenciasDaoDmpConsultaImp">
+
+		
+	</bean>
+	
+	<bean id="TransferenciasDaoUtilInterface" class="com.telcel.portal.dao.implementacion.TransferenciasDaoUtilImp">
+
+		
+	</bean>	
+
+	<bean id="dataSourceOracle" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" >
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@192.9.198.55:4150:taxi" />
+		<property name="username" value="taxi01" />
+		<property name="password" value="taxi01" />
+		<property name="maxActive" value="35" />
+		<property name="maxIdle" value="35" />
+		<property name="removeAbandoned" value="true" />
+		<property name="removeAbandonedTimeout" value="900" />
+		<property name="validationQuery" value="SELECT 1 FROM DUAL" />	
+	</bean>
+	
+
+
+	<bean id="jdbcTemplate"	class="org.springframework.jdbc.core.simple.SimpleJdbcTemplate">
+		<constructor-arg ref="dataSourceOracle" />
+	</bean>
+	
+	
+	
+    <bean name="/TemplateAction" class="com.telcel.portal.actions.TemplateAction"    scope="prototype"   >
+        <property name="myDao" ref="TransferenciasDaoConsultaImp" />
+        <property name="myDao2" ref="TransferenciasDaoUtilInterface" />
+        <property name="myDao3" ref="TransferenciasDaoImp" />
+        <property name="myDao4" ref="TransferenciasDaoImp2" />
+    </bean>
+	
+ 
+</beans>

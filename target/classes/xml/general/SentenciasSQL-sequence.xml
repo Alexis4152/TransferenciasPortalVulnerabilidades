@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Query>
+	<sequence>
+	  <name>Q_ORA_SEQ_NEXTVAL</name>
+	  <instruction>
+	  SELECT ID_SEQUENCE.NEXTVAL FROM DUAL
+	  </instruction>
+	</sequence>
+</Query>
+	 

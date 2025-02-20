@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration//EN" "http://jakarta.apache.org/struts/dtds/tiles-config.dtd">
+<tiles-definitions>
+	<!--Defina aquí cada una de las definiciones-->
+	<definition name="cierraResultado" path="/menu/cierraResultado.jsp">
+	</definition>
+</tiles-definitions>

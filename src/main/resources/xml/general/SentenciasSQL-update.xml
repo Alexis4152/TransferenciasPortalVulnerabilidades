@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Query>
+	<update>
+	  <name>U_PTRA_EMPAUDITA</name>
+	  <instruction>
+		UPDATE TRA_EMPLEADO SET AUDITAUSR='?', AUDITAFECHA='?' WHERE IDEMPLEADO=?
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_PTRA_EMPLEADO</name>
+	  <instruction>
+		UPDATE TRA_EMPLEADO SET IDPERFIL=? WHERE IDEMPLEADO=?
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_PTRA_EMPLEADORES</name>
+	  <instruction>
+		UPDATE TRA_EMPLEADO SET ESTATUSUSR=1 WHERE IDEMPLEADO=?
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_PTRA_EMPLEADOIN</name>
+	  <instruction>
+		UPDATE TRA_EMPLEADO SET ESTATUSUSR=-1 WHERE IDEMPLEADO=?
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_PTRA_PETICION</name>
+	  <instruction>
+		UPDATE TRA_PETICIONES SET IDEMPLEADO=?, HORARIO='?', PERIODO='?', ASISTENCIA='?', CANTIDAD_DE_MENSAJES='?'	WHERE IDPETICION=?	
+	  </instruction>
+	</update>
+	<update>
+	  <name>U_PTRA_ALERTA</name>
+	  <instruction>
+		UPDATE TRA_ALERTAS SET COLOR='?', TIEMPO='?', IDESTATUS=? WHERE IDALERTA=?
+	  </instruction>
+	</update>
+</Query>

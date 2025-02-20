@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:impl="http://test.dswi.gsa.telcel.com" xmlns:intf="http://test.dswi.gsa.telcel.com" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsi="http://ws-i.org/profiles/basic/1.1/xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://test.dswi.gsa.telcel.com">
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://test.dswi.gsa.telcel.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <element name="autenticarUsuarioAppResponse">
+    <complexType>
+     <sequence>
+      <element name="autenticarUsuarioAppReturn" nillable="true" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="autenticarUsuario">
+    <complexType>
+     <sequence>
+      <element name="numeroempleado" nillable="true" type="xsd:string"/>
+      <element name="password" nillable="true" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="autenticarUsuarioResponse">
+    <complexType>
+     <sequence>
+      <element name="autenticarUsuarioReturn" nillable="true" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="autenticarUsuarioApp">
+    <complexType>
+     <sequence>
+      <element name="numeroEmpleado" nillable="true" type="xsd:string"/>
+      <element name="password" nillable="true" type="xsd:string"/>
+      <element name="idApp" nillable="true" type="xsd:string"/>
+      <element name="claveApp" nillable="true" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+  </schema>
+  </wsdl:types>
+  <wsdl:message name="autenticarUsuarioRequest">
+    <wsdl:part element="intf:autenticarUsuario" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="autenticarUsuarioAppRequest">
+    <wsdl:part element="intf:autenticarUsuarioApp" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="autenticarUsuarioAppResponse">
+    <wsdl:part element="intf:autenticarUsuarioAppResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="autenticarUsuarioResponse">
+    <wsdl:part element="intf:autenticarUsuarioResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:portType name="ldap">
+    <wsdl:operation name="autenticarUsuarioApp">
+      <wsdl:input message="intf:autenticarUsuarioAppRequest" name="autenticarUsuarioAppRequest"/>
+      <wsdl:output message="intf:autenticarUsuarioAppResponse" name="autenticarUsuarioAppResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="autenticarUsuario">
+      <wsdl:input message="intf:autenticarUsuarioRequest" name="autenticarUsuarioRequest"/>
+      <wsdl:output message="intf:autenticarUsuarioResponse" name="autenticarUsuarioResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ldapSoapBinding" type="intf:ldap">
+<wsaw:UsingAddressing xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" wsdl:required="false"/>
+    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="autenticarUsuarioApp">
+      <wsdlsoap:operation soapAction="autenticarUsuarioApp"/>
+      <wsdl:input name="autenticarUsuarioAppRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="autenticarUsuarioAppResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="autenticarUsuario">
+      <wsdlsoap:operation soapAction="autenticarUsuario"/>
+      <wsdl:input name="autenticarUsuarioRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="autenticarUsuarioResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ldapService">
+    <wsdl:port binding="intf:ldapSoapBinding" name="ldap">
+      <wsdlsoap:address location="http://intranet.telcel.com:8040/ldapWeb/services/ldap"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

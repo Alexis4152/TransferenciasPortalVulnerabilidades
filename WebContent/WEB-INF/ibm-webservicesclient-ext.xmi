@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.ibm.etools.webservice.wscext:WsClientExtension xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:com.ibm.etools.webservice.wscext="http://www.ibm.com/websphere/appserver/schemas/5.0.2/wscext.xmi" xmi:id="WsClientExtension_1270826429148">
+  <serviceRefs xmi:id="ServiceRef_1293123347364" serviceRefLink="service/ldapService">
+    <portQnameBindings xmi:id="PortQnameBinding_1293123347364" portQnameLocalNameLink="ldap"/>
+  </serviceRefs>
+</com.ibm.etools.webservice.wscext:WsClientExtension>
